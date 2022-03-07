@@ -1,0 +1,60 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md] # to preserve markdown hard linebreaks
+
+    -   id: end-of-file-fixer
+    -   id: debug-statements
+    -   id: name-tests-test
+        name: Tests should start with "test_*.py"
+        args: ['--django'] # to match "test*.py" instead of "*_test.py"
+
+    -   id: no-commit-to-branch
+        args: [--branch, main]
+
+-   repo: local
+    hooks:
+    -   id: black
+        name: Formatting code
+        entry: black
+        pass_filenames: true
+        language: system
+        types: [python]
+
+    -   id: flake8
+        name: Linting and checking code standards
+        entry: poetry run flake8
+        args: ['--config=config/flake8.ini']
+        language: system
+        types: [python]
+
+    -   id: isort
+        name: Sorting imports
+        entry: isort
+        pass_filenames: true
+        language: system
+        types: [python]
+
+    -   id: mypy
+        name: Checking static typing
+        entry: mypy
+        language: system
+        types: [python]
+
+    -   id: pytest
+        name: Check pytest unit tests
+        entry: poe tests
+        pass_filenames: false
+        language: system
+        types: [python]
+
+    -   id: generate-docs
+        name: Generate and stage new docs
+        entry: poe docs && git add docs
+        pass_filenames: false
+        language: system
+        types: [python]
